@@ -1,21 +1,22 @@
+import os
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from chat import get_bot_response
 import uuid
 
 app = Flask(__name__)
-CORS(app)   # Enable CORS for frontend access
+CORS(app)
 
-# -------------------------------
-# HEALTH / HOME ROUTE
-# -------------------------------
+# -----------------------
+# HEALTH CHECK (OPTIONAL)
+# -----------------------
 @app.route("/", methods=["GET"])
-def home():
+def health():
     return "Twin Health Chatbot API is running."
 
-# -------------------------------
+# -----------------------
 # CHAT ENDPOINT
-# -------------------------------
+# -----------------------
 @app.route("/chat", methods=["POST"])
 def chat():
     data = request.get_json(force=True)
@@ -31,8 +32,9 @@ def chat():
         "session_id": session_id
     })
 
-# -------------------------------
-# APP START
-# -------------------------------
+# -----------------------
+# RENDER-PRODUCTION RUN
+# -----------------------
 if __name__ == "__main__":
-    app.run(host="127.0.0.1", port=5000, debug=True)
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)
